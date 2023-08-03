@@ -4,6 +4,15 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+#day,
+#hour,
+#minute,
+#second
+{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+}
+
 @media only screen and (min-width: 1200px) {
     .custom{
         height: 100vh;
@@ -26,4 +35,9 @@ body {
 }
 .card img {
     height: 300px;
+}
+.my-md-5 {
+    max-width: 800px; 
+    max-height: 500px; 
+    overflow-x: auto; 
 }

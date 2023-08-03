@@ -27,10 +27,10 @@ function updateCountdown() {
         const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
         // const countdownString = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-        document.getElementById("day").innerText = days;
-        document.getElementById("hour").innerText = hours;
-        document.getElementById("minute").innerText = minutes;
-        document.getElementById("second").innerText = seconds;
+        document.getElementById("day").innerText = days+" "+"d";
+        document.getElementById("hour").innerText = hours+" "+"h";
+        document.getElementById("minute").innerText = minutes+" "+"m";
+        document.getElementById("second").innerText = seconds+" "+"s";
     } else {
         document.getElementById("countdown").innerText = "It's here!";
     }
@@ -96,8 +96,6 @@ function showMostPopularLomba() {
         top3Container.appendChild(colAutoDiv);
     });
 }
-
-// Call the function to show the most popular "lomba" and the top 3 most popular data on page load
 showMostPopularLomba();
 
 
@@ -198,6 +196,7 @@ function render() {
             masterData = temp;
             document.getElementById("data-peserta").innerHTML = "";
             render();
+            showMostPopularLomba();
             console.log(masterData);
         };
         newCol6.onclick = function edit() {
@@ -313,6 +312,7 @@ function renderPanitia() {
             masterDataPanitia = temp;
             document.getElementById("data-panitia").innerHTML = "";
             renderPanitia();
+            showMostPopularLomba();
             console.log(masterDataPanitia);
         };
         newCol6.onclick = function ubah() {
