@@ -27,10 +27,10 @@ function updateCountdown() {
     const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
         // const countdownString = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-        document.getElementById("day").innerText = days+" "+"d";
-        document.getElementById("hour").innerText = hours+" "+"h";
-        document.getElementById("minute").innerText = minutes+" "+"m";
-        document.getElementById("second").innerText = seconds+" "+"s";
+        document.getElementById("day").innerText = days+"d";
+        document.getElementById("hour").innerText = hours+"h";
+        document.getElementById("minute").innerText = minutes+"m";
+        document.getElementById("second").innerText = seconds+"s";
     } else {
         document.getElementById("countdown").innerText = "It's here!";
     }
