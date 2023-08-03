@@ -371,13 +371,21 @@ console.log(masterDataPanitia);
 // video 
 function handleVideoDisplay() {
   const video = document.getElementById('video');
+  window.addEventListener('load', function() {
+    handleVideoDisplay();
+    const video = document.querySelector("video");
+    video.play();
+  });
   const screenWidth = window.innerWidth;
 
-  if (screenWidth <= 768) {
-    video.style.display = 'none'; 
+  if (screenWidth < 768) {
+    video.style.display = 'none'; // Hide the video
   } else {
-    video.style.display = 'block'; 
+    video.style.display = 'block'; // Show the video
+    
   }
 }
+
+// Call the function when the page loads and on window resize
 window.addEventListener('load', handleVideoDisplay);
 window.addEventListener('resize', handleVideoDisplay);
