@@ -26,14 +26,14 @@ function updateCountdown() {
     );
     const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
-    // const countdownString = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-    document.getElementById("day").innerText = days;
-    document.getElementById("hour").innerText = hours;
-    document.getElementById("minute").innerText = minutes;
-    document.getElementById("second").innerText = seconds;
-  } else {
-    document.getElementById("countdown").innerText = "It's here!";
-  }
+        // const countdownString = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+        document.getElementById("day").innerText = days+" "+"d";
+        document.getElementById("hour").innerText = hours+" "+"h";
+        document.getElementById("minute").innerText = minutes+" "+"m";
+        document.getElementById("second").innerText = seconds+" "+"s";
+    } else {
+        document.getElementById("countdown").innerText = "It's here!";
+    }
 }
 setInterval(updateCountdown, 1000);
 
@@ -96,8 +96,6 @@ function showMostPopularLomba() {
     top3Container.appendChild(colAutoDiv);
   });
 }
-
-// Call the function to show the most popular "lomba" and the top 3 most popular data on page load
 showMostPopularLomba();
 
 // CRUD PESERTA
@@ -123,7 +121,7 @@ function createNewData(e) {
   } else if (pilihanLomba === "0" || pilihanLomba.length == 0) {
     alert.innerText = "Data Lomba Harus di Isi";
   } else {
-    alert.remove();
+    alert.innerHTML = "Pendaftaran Selesai";
 
     if (onEdit == false) {
       let id = masterData[masterData.length - 1].id + 1;
@@ -197,35 +195,36 @@ function render() {
     newCol6.style.width = "auto";
     newCol6.appendChild(editButton);
 
-    newCol5.onclick = function hapus() {
-      let tag = Number(newCol1.innerHTML);
-      let temp = [];
-      for (let i = 0; i < masterData.length; i++) {
-        let element = masterData[i];
-        if (i !== tag - 1) {
-          temp.push(element);
-        }
-      }
-      masterData = temp;
-      document.getElementById("data-peserta").innerHTML = "";
-      render();
-      console.log(masterData);
-    };
-    newCol6.onclick = function edit() {
-      onEdit = true;
-      targetEdit = id;
-      document.getElementById("nama-peserta").value = newCol2.innerHTML;
-      document.getElementById("umur-peserta").value = newCol3.innerHTML;
-      document.getElementById("pilihan-lomba").value = newCol4.innerHTML;
-    };
-    newRow.appendChild(newCol1);
-    newRow.appendChild(newCol2);
-    newRow.appendChild(newCol3);
-    newRow.appendChild(newCol4);
-    newRow.appendChild(newCol6);
-    newRow.appendChild(newCol5);
-    dataPeserta.appendChild(newRow);
-  }
+        newCol5.onclick = function hapus() {
+            let tag = Number(newCol1.innerHTML);
+            let temp = [];
+            for (let i = 0; i < masterData.length; i++) {
+                let element = masterData[i];
+                if (i !== tag - 1) {
+                    temp.push(element);
+                }
+            }
+            masterData = temp;
+            document.getElementById("data-peserta").innerHTML = "";
+            render();
+            showMostPopularLomba();
+            console.log(masterData);
+        };
+        newCol6.onclick = function edit() {
+            onEdit = true;
+            targetEdit = id;
+            document.getElementById("nama-peserta").value = newCol2.innerHTML;
+            document.getElementById("umur-peserta").value = newCol3.innerHTML;
+            document.getElementById("pilihan-lomba").value = newCol4.innerHTML;
+        };
+        newRow.appendChild(newCol1);
+        newRow.appendChild(newCol2);
+        newRow.appendChild(newCol3);
+        newRow.appendChild(newCol4);
+        newRow.appendChild(newCol6);
+        newRow.appendChild(newCol5);
+        dataPeserta.appendChild(newRow);
+    }
 }
 render();
 console.log(masterData);
@@ -254,7 +253,7 @@ function dataBaru(e) {
   } else if (pilihanLomba === "0" || pilihanLomba.length == 0) {
     alert.innerText = "Data Lomba Harus di Isi";
   } else {
-    alert.remove();
+    alert.innerHTML = "Pendaftaran Selesai";
     //   if (umurPanitia === "") {
     //     alert.innerText = "Data Umur Harus di Isi";
     //   }
@@ -333,36 +332,52 @@ function renderPanitia() {
     newCol6.style.width = "auto";
     newCol6.appendChild(editButton);
 
-    newCol5.onclick = function hapusData() {
-      let tag = Number(newCol1.innerHTML);
-      let temp = [];
-      for (let i = 0; i < masterDataPanitia.length; i++) {
-        let element = masterDataPanitia[i];
-        if (i !== tag - 1) {
-          temp.push(element);
-        }
-      }
-      masterDataPanitia = temp;
-      document.getElementById("data-panitia").innerHTML = "";
-      renderPanitia();
-      console.log(masterDataPanitia);
-    };
-    newCol6.onclick = function ubah() {
-      onEditPanitia = true;
-      targetEditPanitia = id;
-      document.getElementById("nama-panitia").value = newCol2.innerHTML;
-      document.getElementById("umur-panitia").value = newCol3.innerHTML;
-      document.getElementById("pilihan-lomba-panitia").value =
-        newCol4.innerHTML;
-    };
-    newRow.appendChild(newCol1);
-    newRow.appendChild(newCol2);
-    newRow.appendChild(newCol3);
-    newRow.appendChild(newCol4);
-    newRow.appendChild(newCol6);
-    newRow.appendChild(newCol5);
-    dataPanitia.appendChild(newRow);
-  }
+        newCol5.onclick = function hapusData() {
+            let tag = Number(newCol1.innerHTML);
+            let temp = [];
+            for (let i = 0; i < masterDataPanitia.length; i++) {
+                let element = masterDataPanitia[i];
+                if (i !== tag - 1) {
+                    temp.push(element);
+                }
+            }
+            masterDataPanitia = temp;
+            document.getElementById("data-panitia").innerHTML = "";
+            renderPanitia();
+            showMostPopularLomba();
+            console.log(masterDataPanitia);
+        };
+        newCol6.onclick = function ubah() {
+            onEditPanitia = true;
+            targetEditPanitia = id;
+            document.getElementById("nama-panitia").value = newCol2.innerHTML;
+            document.getElementById("umur-panitia").value = newCol3.innerHTML;
+            document.getElementById("pilihan-lomba-panitia").value =
+                newCol4.innerHTML;
+        };
+        newRow.appendChild(newCol1);
+        newRow.appendChild(newCol2);
+        newRow.appendChild(newCol3);
+        newRow.appendChild(newCol4);
+        newRow.appendChild(newCol6);
+        newRow.appendChild(newCol5);
+        dataPanitia.appendChild(newRow);
+    }
 }
 renderPanitia();
 console.log(masterDataPanitia);
+
+
+// video 
+function handleVideoDisplay() {
+  const video = document.getElementById('video');
+  const screenWidth = window.innerWidth;
+
+  if (screenWidth <= 768) {
+    video.style.display = 'none'; 
+  } else {
+    video.style.display = 'block'; 
+  }
+}
+window.addEventListener('load', handleVideoDisplay);
+window.addEventListener('resize', handleVideoDisplay);

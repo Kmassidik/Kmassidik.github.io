@@ -1,7 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,700&display=swap");
 
 body {
-  font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
+}
+
+#day,
+#hour,
+#minute,
+#second
+{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
 }
 
 @media only screen and (min-width: 1200px) {
@@ -9,6 +18,11 @@ body {
     height: 100vh;
     margin-bottom: 75px;
   }
+  .my-md-5 {
+    max-width: auto; 
+    max-height: auto; 
+    overflow-x: auto; 
+}
 }
 .shadow-lg {
   background-color: #fff !important;
@@ -26,4 +40,9 @@ body {
 }
 .card img {
   height: 300px;
+}
+.my-md-5 {
+    max-width: 800px; 
+    max-height: 500px; 
+    overflow-x: auto; 
 }
