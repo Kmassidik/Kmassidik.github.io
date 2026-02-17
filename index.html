@@ -1,166 +1,800 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coming Soon</title>
+    <title>TaskBoard Pro | Espresso Elegance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet" />
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                cream: "#FAF9F6", // Main Background (Alabaster)
+                white: "#FFFFFF", // Card Background
+                espresso: "#2C1810", // Main Text (Dark Coffee)
+                mocha: "#8D7B68", // Secondary/Borders
+                gold: "#C8A27A", // Accents (Crema)
+              },
+            },
+            fontFamily: {
+              serif: ["'Playfair Display'", "serif"],
+              sans: ["'Lato'", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
     <style>
       body {
+        background-color: #faf9f6;
+        color: #2c1810;
+        /* Subtle paper grain texture overlay */
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%238D7B68' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+      }
+
+      /* Smooth transitions */
+      .task-card,
+      button,
+      input,
+      textarea {
+        transition: all 0.3s ease-in-out;
+      }
+
+      /* Dragging visuals */
+      .drag-over {
+        background-color: rgba(200, 162, 122, 0.1) !important;
+        border: 2px dashed #c8a27a !important;
+        border-radius: 12px;
+      }
+      .dragging {
+        opacity: 0.9;
+        transform: rotate(2deg) scale(1.02);
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+      }
+
+      /* The Card - Clean White */
+      .task-card {
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        color: #2c1810;
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.05),
+          0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        border-radius: 12px;
+      }
+      .task-card:hover {
+        transform: translateY(-4px);
+        box-shadow:
+          0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        border-color: #c8a27a;
+      }
+
+      /* Columns */
+      .column-container {
+        border-top: 4px solid transparent;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(8px);
+      }
+      .column-todo {
+        border-top-color: #8d7b68;
+      }
+      .column-progress {
+        border-top-color: #c8a27a;
+      }
+      .column-done {
+        border-top-color: #2c1810;
+      }
+
+      /* Line Clamp Support */
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         overflow: hidden;
-        background-color: #1a1a1a;
-        color: #ffffff;
-        font-family: "Poppins", sans-serif;
       }
 
-      #bgCanvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #faf9f6;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d4d4d4;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #c8a27a;
       }
 
-      .content {
-        position: relative;
-        z-index: 10;
+      .toast {
+        animation:
+          slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          fadeOut 0.3s ease-in 2.7s forwards;
       }
-
-      .content h1 {
-        font-size: 4rem;
-        font-weight: 700;
-      }
-
-      .content p {
-        font-size: 1.5rem;
-        max-width: 500px;
-        margin: 0 auto;
-      }
-
-      .animate-bounce {
-        animation: bounce 2s infinite;
-      }
-
-      @keyframes bounce {
-        0%,
-        100% {
-          transform: translateY(-5%);
-          animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+      @keyframes slideIn {
+        from {
+          transform: translateY(100%) scale(0.9);
+          opacity: 0;
         }
-        50% {
-          transform: translateY(0);
-          animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        to {
+          transform: translateY(0) scale(1);
+          opacity: 1;
         }
       }
-      .typing-cursor {
-        border-right: 0.15em solid white;
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: translateY(20px);
+        }
       }
     </style>
   </head>
-  <body>
-    <div class="flex justify-center items-center h-screen">
-      <div class="text-center content">
-        <h1
-          class="text-white text-6xl md:text-8xl font-bold tracking-tight mb-4 animate-bounce">
-          <span id="typed"></span>
-        </h1>
-        <p class="text-gray-300 text-xl md:text-2xl max-w-lg mx-auto">
-          We're preparing something amazing for you. Stay tuned!
-        </p>
+  <body
+    class="antialiased font-sans selection:bg-brand-gold selection:text-white"
+  >
+    <!-- Toast Container -->
+    <div
+      id="toastContainer"
+      class="fixed bottom-6 right-6 z-[100] space-y-3"
+    ></div>
+
+    <div class="min-h-screen flex flex-col">
+      <!-- Header -->
+      <header
+        class="px-10 py-6 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md bg-brand-cream/90 border-b border-brand-mocha/20"
+      >
+        <div class="flex items-center gap-5">
+          <div
+            class="w-12 h-12 bg-brand-espresso text-brand-gold rounded-full flex items-center justify-center shadow-lg group hover:scale-110 transition-transform cursor-pointer"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M2,21H20V19H2M20,8H18V5H20M20,3H4V13A4,4 0 0,0 8,17H14A4,4 0 0,0 18,13V10H20A2,2 0 0,0 22,8V5C22,3.89 21.1,3 20,3Z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1
+              class="text-3xl font-serif font-bold text-brand-espresso tracking-tight"
+            >
+              Task<span class="text-brand-gold italic font-normal">Board</span>
+            </h1>
+            <div class="flex items-center gap-2 mt-1">
+              <div
+                id="syncIndicator"
+                class="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse"
+              ></div>
+              <span
+                class="text-[10px] font-bold tracking-widest text-brand-mocha uppercase"
+                >Sync Active</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <button
+          onclick="toggleCreateModal()"
+          class="group relative inline-block focus:outline-none"
+        >
+          <span
+            class="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-brand-gold rounded-full transition-transform group-hover:translate-x-0 group-hover:translate-y-0"
+          ></span>
+          <span
+            class="relative inline-block border border-brand-gold bg-brand-white px-8 py-2.5 text-sm font-bold uppercase tracking-widest text-brand-espresso rounded-full hover:bg-brand-gold hover:text-white transition-colors"
+          >
+            Create Task +
+          </span>
+        </button>
+      </header>
+
+      <!-- Board -->
+      <main class="p-10 flex-1 overflow-x-auto">
+        <div class="flex gap-10 h-full min-w-max pb-4">
+          <!-- Todo -->
+          <div class="flex flex-col w-[26rem] column-container column-todo p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-brand-mocha"></div>
+                <h2 class="font-serif text-xl font-bold text-brand-espresso">
+                  To Do
+                </h2>
+              </div>
+              <span
+                id="todo-count"
+                class="text-xs font-bold bg-brand-mocha/10 text-brand-mocha px-3 py-1 rounded-full"
+                >0</span
+              >
+            </div>
+            <div
+              id="todo"
+              class="column-dropzone flex-1 space-y-4 min-h-[400px]"
+              ondrop="drop(event)"
+              ondragover="allowDrop(event)"
+              ondragenter="dragEnter(event)"
+              ondragleave="dragLeave(event)"
+            ></div>
+          </div>
+
+          <!-- In Progress -->
+          <div
+            class="flex flex-col w-[26rem] column-container column-progress p-6"
+          >
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-2 h-2 rounded-full bg-brand-gold animate-pulse"
+                ></div>
+                <h2 class="font-serif text-xl font-bold text-brand-espresso">
+                  In Progress
+                </h2>
+              </div>
+              <span
+                id="inprogress-count"
+                class="text-xs font-bold bg-brand-gold/10 text-brand-espresso px-3 py-1 rounded-full"
+                >0</span
+              >
+            </div>
+            <div
+              id="inprogress"
+              class="column-dropzone flex-1 space-y-4 min-h-[400px]"
+              ondrop="drop(event)"
+              ondragover="allowDrop(event)"
+              ondragenter="dragEnter(event)"
+              ondragleave="dragLeave(event)"
+            ></div>
+          </div>
+
+          <!-- Completed -->
+          <div class="flex flex-col w-[26rem] column-container column-done p-6">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-brand-espresso"></div>
+                <h2 class="font-serif text-xl font-bold text-brand-espresso">
+                  Done
+                </h2>
+              </div>
+              <span
+                id="completed-count"
+                class="text-xs font-bold bg-brand-espresso text-brand-white px-3 py-1 rounded-full"
+                >0</span
+              >
+            </div>
+            <div
+              id="completed"
+              class="column-dropzone flex-1 space-y-4 min-h-[400px]"
+              ondrop="drop(event)"
+              ondragover="allowDrop(event)"
+              ondragenter="dragEnter(event)"
+              ondragleave="dragLeave(event)"
+            ></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Create Modal -->
+    <div
+      id="createTaskModal"
+      class="hidden fixed inset-0 bg-brand-espresso/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-brand-white w-full max-w-md shadow-2xl rounded-2xl transform scale-100 transition-all border border-brand-mocha/20"
+      >
+        <div class="p-8 pb-0 flex justify-between items-start">
+          <div>
+            <h3 class="text-3xl font-serif text-brand-espresso italic">
+              Create Task
+            </h3>
+          </div>
+          <button
+            onclick="toggleCreateModal()"
+            class="text-brand-mocha hover:text-brand-espresso transition-colors"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <form id="taskForm" class="p-8 space-y-6">
+          <div class="space-y-2">
+            <label
+              class="block text-xs font-bold uppercase tracking-widest text-brand-mocha"
+              >Task Title</label
+            >
+            <input
+              type="text"
+              id="taskTitle"
+              required
+              class="w-full px-4 py-3 bg-brand-cream border border-brand-mocha/20 rounded-lg text-brand-espresso text-lg font-serif focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold placeholder-brand-mocha/40 transition-all"
+              placeholder="e.g. Bug Fix: Login Page"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label
+              class="block text-xs font-bold uppercase tracking-widest text-brand-mocha"
+              >Description</label
+            >
+            <textarea
+              id="taskDescription"
+              rows="3"
+              class="w-full px-4 py-3 bg-brand-cream border border-brand-mocha/20 rounded-lg text-brand-espresso text-sm focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold resize-none placeholder-brand-mocha/40 transition-all"
+              placeholder="Add details, acceptance criteria, etc..."
+            ></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label
+                class="block text-xs font-bold uppercase tracking-widest text-brand-mocha"
+                >Assignee</label
+              >
+              <input
+                type="text"
+                id="assignedTo"
+                required
+                class="w-full px-4 py-3 bg-brand-cream border border-brand-mocha/20 rounded-lg font-bold text-brand-espresso focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all"
+                placeholder="Name"
+              />
+            </div>
+            <div class="space-y-2">
+              <label
+                class="block text-xs font-bold uppercase tracking-widest text-brand-mocha"
+                >Reporter</label
+              >
+              <input
+                type="text"
+                id="assignedBy"
+                required
+                class="w-full px-4 py-3 bg-brand-cream border border-brand-mocha/20 rounded-lg font-bold text-brand-espresso focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all"
+                placeholder="Name"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-brand-espresso text-white font-bold py-4 uppercase tracking-widest hover:bg-brand-gold transition-colors rounded-xl shadow-lg mt-4"
+          >
+            Create Task
+          </button>
+        </form>
       </div>
     </div>
 
-    <canvas id="bgCanvas"></canvas>
-    <script src="https://unpkg.com/typed.js@2.0.15/dist/typed.umd.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Detail Modal -->
+    <div
+      id="detailModal"
+      class="hidden fixed inset-0 bg-brand-espresso/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-brand-white w-full max-w-lg shadow-2xl rounded-2xl border border-brand-mocha/20 relative overflow-hidden"
+      >
+        <div class="p-10 pb-6 relative z-10">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              id="detailStatus"
+              class="inline-block px-3 py-1 bg-brand-cream text-brand-espresso border border-brand-mocha/20 text-[10px] font-bold uppercase tracking-[0.2em] rounded-full"
+            >
+              STATUS
+            </div>
+            <div class="h-px bg-brand-mocha/20 flex-1"></div>
+          </div>
+
+          <h3
+            id="detailTitle"
+            class="text-4xl font-serif text-brand-espresso leading-tight mb-6"
+          >
+            Task Title
+          </h3>
+
+          <div class="space-y-8">
+            <div
+              class="bg-brand-cream p-6 rounded-xl border border-brand-mocha/10"
+            >
+              <p
+                id="detailDescription"
+                class="text-brand-espresso/80 font-medium text-base leading-relaxed"
+              >
+                No description provided.
+              </p>
+            </div>
+
+            <div class="flex gap-12">
+              <div>
+                <h4
+                  class="text-[10px] font-bold text-brand-mocha uppercase tracking-widest mb-2"
+                >
+                  Assignee
+                </h4>
+                <div class="flex items-center gap-3">
+                  <div
+                    id="detailAssigneeInitial"
+                    class="w-10 h-10 bg-brand-espresso text-brand-gold rounded-full flex items-center justify-center font-serif text-lg shadow-sm"
+                  >
+                    ?
+                  </div>
+                  <span
+                    id="detailAssignee"
+                    class="text-lg font-bold text-brand-espresso"
+                    >Name</span
+                  >
+                </div>
+              </div>
+              <div>
+                <h4
+                  class="text-[10px] font-bold text-brand-mocha uppercase tracking-widest mb-2"
+                >
+                  Reporter
+                </h4>
+                <div class="flex items-center gap-3">
+                  <div
+                    id="detailReporterInitial"
+                    class="w-10 h-10 bg-brand-gold text-white rounded-full flex items-center justify-center font-serif text-lg shadow-sm"
+                  >
+                    ?
+                  </div>
+                  <span
+                    id="detailReporter"
+                    class="text-lg font-bold text-brand-espresso"
+                    >Name</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="p-6 flex justify-end bg-brand-cream border-t border-brand-mocha/10 relative z-10"
+        >
+          <button
+            onclick="toggleDetailModal()"
+            class="text-brand-mocha font-bold uppercase tracking-widest hover:text-brand-espresso transition-colors text-xs"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-      let scene, camera, renderer, rain, snow;
-      let rainDirection = 0.002; // Initial rain direction
-      let snowDirection = 0.001; // Initial snow direction
+      // =====================================================
+      // SUPABASE CONFIG
+      // =====================================================
+      const SUPABASE_URL = "https://gqkvxlrddhntlfgflyds.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdxa3Z4bHJkZGhudGxmZ2ZseWRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NTE2NTYsImV4cCI6MjA4NTUyNzY1Nn0.6AXZm_-hOL-0TjM3uZlLHQv5ZU1KDpyGWeetaoa0T9k";
 
-      function init() {
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(
-          75,
-          window.innerWidth / window.innerHeight,
-          0.1,
-          1000
-        );
-        renderer = new THREE.WebGLRenderer({
-          canvas: document.querySelector("#bgCanvas"),
-          alpha: true,
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+      const { createClient } = supabase;
+      const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const TABLE = "tasks";
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-        scene.add(ambientLight);
+      let tasks = [];
 
-        // Rain
-        rain = createParticleEffect(0xaaaaaa, 0.2, 10000);
-        scene.add(rain);
+      // =====================================================
+      // SUPABASE CRUD
+      // =====================================================
 
-        // Snow
-        snow = createParticleEffect(0xffffff, 0.5, 5000);
-        scene.add(snow);
-
-        camera.position.z = 20;
-
-        animate();
-      }
-
-      function createParticleEffect(color, size, amount) {
-        const particlesGeometry = new THREE.BufferGeometry();
-        const vertices = [];
-        for (let i = 0; i < amount; i++) {
-          vertices.push((Math.random() - 0.5) * 200);
-          vertices.push((Math.random() - 0.5) * 200);
-          vertices.push((Math.random() - 0.5) * 200);
+      async function fetchTasks() {
+        const { data, error } = await db
+          .from(TABLE)
+          .select("*")
+          .order("created_at", { ascending: true });
+        if (error) {
+          showToast("Error loading tasks", true);
+          return;
         }
-        particlesGeometry.setAttribute(
-          "position",
-          new THREE.Float32BufferAttribute(vertices, 3)
+
+        tasks = data.map((row) => ({
+          id: row.id,
+          title: row.title,
+          description: row.description,
+          assignedTo: row.assigned_to,
+          assignedBy: row.assigned_by,
+          status: row.status,
+          createdAt: row.created_at, // Mapping created_at here
+        }));
+        renderBoard();
+      }
+
+      async function createTask(task) {
+        const { data, error } = await db
+          .from(TABLE)
+          .insert({
+            title: task.title,
+            description: task.description,
+            assigned_to: task.assignedTo,
+            assigned_by: task.assignedBy,
+            status: task.status,
+          })
+          .select()
+          .single();
+
+        if (error) {
+          showToast("Failed: " + error.message, true);
+          return null;
+        }
+        showToast("Task Created");
+        return data;
+      }
+
+      async function updateTaskStatus(id, newStatus) {
+        const { error } = await db
+          .from(TABLE)
+          .update({ status: newStatus })
+          .eq("id", id);
+        if (error) {
+          showToast("Update failed", true);
+          await fetchTasks();
+          return;
+        }
+        showToast("Status Updated");
+      }
+
+      async function deleteTaskById(id) {
+        const { error } = await db.from(TABLE).delete().eq("id", id);
+        if (error) {
+          showToast("Delete failed", true);
+          return;
+        }
+        showToast("Task Deleted");
+      }
+
+      // =====================================================
+      // REALTIME
+      // =====================================================
+
+      function subscribeToChanges() {
+        db.channel("tasks-realtime")
+          .on(
+            "postgres_changes",
+            { event: "*", schema: "public", table: TABLE },
+            (payload) => {
+              fetchTasks();
+            },
+          )
+          .subscribe((status) => {
+            const indicator = document.getElementById("syncIndicator");
+            if (status === "SUBSCRIBED") {
+              indicator.classList.remove("bg-red-500", "bg-yellow-500");
+              indicator.classList.add("bg-brand-gold");
+            } else {
+              indicator.classList.remove("bg-brand-gold");
+              indicator.classList.add("bg-red-500");
+            }
+          });
+      }
+
+      // =====================================================
+      // RENDERING
+      // =====================================================
+
+      function renderBoard() {
+        const columns = ["todo", "inprogress", "completed"];
+        columns.forEach((status) => {
+          const container = document.getElementById(status);
+          const countLabel = document.getElementById(`${status}-count`);
+          if (!container || !countLabel) return;
+
+          const filtered = tasks.filter((t) => t.status === status);
+          countLabel.innerText = filtered.length.toString();
+          container.innerHTML = "";
+
+          filtered.forEach((task) => {
+            container.appendChild(createTaskCard(task));
+          });
+        });
+      }
+
+      function createTaskCard(task) {
+        const div = document.createElement("div");
+        div.id = task.id;
+        div.className =
+          "task-card p-5 relative cursor-grab active:cursor-grabbing group";
+        div.draggable = true;
+        div.ondragstart = drag;
+        div.onclick = () => openTaskDetail(task.id);
+
+        // Remove underscores from title
+        const displayTitle = task.title
+          ? task.title.replace(/_/g, " ")
+          : "Untitled";
+        const displayDesc = task.description || "";
+
+        // Format Date
+        const date = task.createdAt
+          ? new Date(task.createdAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })
+          : "Today";
+
+        div.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+                <h4 class="text-lg font-serif font-bold leading-tight pr-8 break-words text-brand-espresso">${displayTitle}</h4>
+                <button onclick="event.stopPropagation(); handleDelete('${task.id}')" class="absolute top-3 right-3 text-brand-mocha/30 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <p class="text-sm text-brand-mocha line-clamp-2 font-sans mb-4 min-h-[1.25rem]">${displayDesc}</p>
+
+            <div class="flex items-center justify-between pt-3 border-t border-brand-mocha/10">
+                <div class="flex items-center gap-2">
+                     <div class="w-6 h-6 rounded-full bg-brand-cream border border-brand-mocha/20 text-brand-espresso flex items-center justify-center font-bold text-[10px]">
+                        ${task.assignedTo ? task.assignedTo.substring(0, 1).toUpperCase() : "?"}
+                     </div>
+                     <span class="text-xs font-bold text-brand-mocha uppercase tracking-wider">${task.assignedTo}</span>
+                </div>
+                <div class="text-[10px] font-bold text-brand-mocha/60 uppercase tracking-wider flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    ${date}
+                </div>
+            </div>
+        `;
+        return div;
+      }
+
+      // =====================================================
+      // DRAG & DROP & ACTIONS
+      // =====================================================
+
+      function allowDrop(ev) {
+        ev.preventDefault();
+      }
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+        ev.target.classList.add("dragging");
+      }
+      function dragEnter(ev) {
+        if (ev.currentTarget.classList.contains("column-dropzone"))
+          ev.currentTarget.classList.add("drag-over");
+      }
+      function dragLeave(ev) {
+        if (ev.currentTarget.classList.contains("column-dropzone"))
+          ev.currentTarget.classList.remove("drag-over");
+      }
+      async function drop(ev) {
+        ev.preventDefault();
+        const id = ev.dataTransfer.getData("text");
+        const dragged = document.getElementById(id);
+        if (dragged) dragged.classList.remove("dragging");
+        ev.currentTarget.classList.remove("drag-over");
+
+        const newStatus = ev.currentTarget.id;
+        tasks = tasks.map((t) =>
+          t.id === id ? { ...t, status: newStatus } : t,
         );
-        const particlesMaterial = new THREE.PointsMaterial({ color, size });
-        return new THREE.Points(particlesGeometry, particlesMaterial);
+        renderBoard();
+        await updateTaskStatus(id, newStatus);
       }
 
-      function animate() {
-        requestAnimationFrame(animate);
-        rain.rotation.y += rainDirection;
-        snow.rotation.y += snowDirection;
-        renderer.render(scene, camera);
+      function toggleCreateModal() {
+        const modal = document.getElementById("createTaskModal");
+        modal.classList.toggle("hidden");
+        if (!modal.classList.contains("hidden"))
+          document.getElementById("taskTitle").focus();
+      }
+      function toggleDetailModal() {
+        document.getElementById("detailModal").classList.toggle("hidden");
       }
 
-      function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+      function openTaskDetail(id) {
+        const task = tasks.find((t) => t.id === id);
+        if (!task) return;
+
+        // Clean title in modal too
+        const displayTitle = task.title
+          ? task.title.replace(/_/g, " ")
+          : "Untitled";
+
+        document.getElementById("detailTitle").innerText = displayTitle;
+        document.getElementById("detailDescription").innerText =
+          task.description || "No specific instructions.";
+        document.getElementById("detailAssignee").innerText = task.assignedTo;
+        document.getElementById("detailReporter").innerText = task.assignedBy;
+        document.getElementById("detailAssigneeInitial").innerText =
+          task.assignedTo.charAt(0).toUpperCase();
+        document.getElementById("detailReporterInitial").innerText =
+          task.assignedBy.charAt(0).toUpperCase();
+
+        const statusEl = document.getElementById("detailStatus");
+        statusEl.innerText =
+          task.status === "inprogress"
+            ? "IN PROGRESS"
+            : task.status.toUpperCase().replace("_", " ");
+
+        // Modal badge colors
+        if (task.status === "todo") {
+          statusEl.className =
+            "inline-block px-4 py-1.5 bg-brand-mocha text-white text-[11px] font-bold uppercase tracking-[0.2em] rounded-full shadow-sm";
+        } else if (task.status === "inprogress") {
+          statusEl.className =
+            "inline-block px-4 py-1.5 bg-brand-gold text-white text-[11px] font-bold uppercase tracking-[0.2em] rounded-full shadow-sm";
+        } else {
+          statusEl.className =
+            "inline-block px-4 py-1.5 bg-brand-espresso text-brand-cream text-[11px] font-bold uppercase tracking-[0.2em] rounded-full shadow-sm";
+        }
+
+        toggleDetailModal();
       }
 
-      function toggleParticleDirection() {
-        rainDirection = -rainDirection; // Toggle the rain direction
-        snowDirection = -snowDirection; // Toggle the snow direction
+      async function handleDelete(id) {
+        tasks = tasks.filter((t) => t.id !== id);
+        renderBoard();
+        await deleteTaskById(id);
       }
 
-      window.addEventListener("resize", onWindowResize, false);
-      window.addEventListener("click", toggleParticleDirection, false); // Update function name
-      init();
-      //   typed.js
-      var options = {
-        strings: ["Coming Soon - Kurnia Massidik"],
-        typeSpeed: 150,
-        backSpeed: 150,
-        showCursor: true,
-        cursorChar: "|",
-        loop: true, // Set this to true for infinite loop
+      document.getElementById("taskForm").onsubmit = async function (e) {
+        e.preventDefault();
+        const rawTitle = document.getElementById("taskTitle").value;
+        const newTask = {
+          title: rawTitle,
+          description: document.getElementById("taskDescription").value,
+          assignedTo: document.getElementById("assignedTo").value,
+          assignedBy: document.getElementById("assignedBy").value,
+          status: "todo",
+        };
+        toggleCreateModal();
+        this.reset();
+        const inserted = await createTask(newTask);
+        if (inserted) {
+          tasks.push({
+            id: inserted.id,
+            title: inserted.title,
+            description: inserted.description,
+            assignedTo: inserted.assigned_to,
+            assignedBy: inserted.assigned_by,
+            status: inserted.status,
+            createdAt: inserted.created_at, // Add Date to local state
+          });
+          renderBoard();
+        }
       };
 
-      var typed = new Typed("#typed", options);
+      function showToast(message, isError = false) {
+        const container = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+        toast.className = `toast px-6 py-3 rounded-lg font-bold text-sm shadow-xl flex items-center gap-3 border ${isError ? "bg-white border-red-500 text-red-500" : "bg-brand-espresso border-brand-gold text-brand-cream"}`;
+        toast.innerHTML = isError
+          ? `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> ${message}`
+          : `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+
+      window.onload = () => {
+        fetchTasks();
+        subscribeToChanges();
+      };
     </script>
   </body>
 </html>
