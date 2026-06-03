@@ -1,800 +1,511 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TaskBoard Pro | Espresso Elegance</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap"
-      rel="stylesheet"
-    />
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                cream: "#FAF9F6", // Main Background (Alabaster)
-                white: "#FFFFFF", // Card Background
-                espresso: "#2C1810", // Main Text (Dark Coffee)
-                mocha: "#8D7B68", // Secondary/Borders
-                gold: "#C8A27A", // Accents (Crema)
-              },
-            },
-            fontFamily: {
-              serif: ["'Playfair Display'", "serif"],
-              sans: ["'Lato'", "sans-serif"],
-            },
-          },
-        },
-      };
-    </script>
-    <style>
-      body {
-        background-color: #faf9f6;
-        color: #2c1810;
-        /* Subtle paper grain texture overlay */
-        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%238D7B68' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
-      }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kurnia | Space Dev</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pixel: 4px;
+    --bg: #020818;
+    --panel: #060d2e;
+    --border: #1a3a7a;
+    --accent: #00f5ff;
+    --accent2: #ff6bff;
+    --accent3: #ffe200;
+    --green: #00ff88;
+    --text: #c8e8ff;
+    --dim: #4a6fa5;
+  }
 
-      /* Smooth transitions */
-      .task-card,
-      button,
-      input,
-      textarea {
-        transition: all 0.3s ease-in-out;
-      }
+  * { margin: 0; padding: 0; box-sizing: border-box; image-rendering: pixelated; }
 
-      /* Dragging visuals */
-      .drag-over {
-        background-color: rgba(200, 162, 122, 0.1) !important;
-        border: 2px dashed #c8a27a !important;
-        border-radius: 12px;
-      }
-      .dragging {
-        opacity: 0.9;
-        transform: rotate(2deg) scale(1.02);
-        box-shadow:
-          0 20px 25px -5px rgba(0, 0, 0, 0.1),
-          0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-      }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
 
-      /* The Card - Clean White */
-      .task-card {
-        background: #ffffff;
-        border: 1px solid #e5e5e5;
-        color: #2c1810;
-        box-shadow:
-          0 4px 6px -1px rgba(0, 0, 0, 0.05),
-          0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        border-radius: 12px;
-      }
-      .task-card:hover {
-        transform: translateY(-4px);
-        box-shadow:
-          0 10px 15px -3px rgba(0, 0, 0, 0.1),
-          0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        border-color: #c8a27a;
-      }
+  /* STAR FIELD */
+  #stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
 
-      /* Columns */
-      .column-container {
-        border-top: 4px solid transparent;
-        border-radius: 16px;
-        background: rgba(255, 255, 255, 0.5);
-        backdrop-filter: blur(8px);
-      }
-      .column-todo {
-        border-top-color: #8d7b68;
-      }
-      .column-progress {
-        border-top-color: #c8a27a;
-      }
-      .column-done {
-        border-top-color: #2c1810;
-      }
+  /* SCANLINES */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.12) 2px,
+      rgba(0,0,0,0.12) 4px
+    );
+    z-index: 100;
+    pointer-events: none;
+  }
 
-      /* Line Clamp Support */
-      .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
+  /* PIXEL BORDER MIXIN */
+  .pixel-box {
+    border: 4px solid var(--border);
+    box-shadow:
+      inset 0 0 0 2px #000,
+      4px 4px 0 #000,
+      0 0 20px rgba(0,245,255,0.08);
+    position: relative;
+  }
 
-      /* Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #faf9f6;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #d4d4d4;
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #c8a27a;
-      }
+  .pixel-box-accent {
+    border: 4px solid var(--accent);
+    box-shadow:
+      inset 0 0 0 2px #000,
+      4px 4px 0 #000,
+      0 0 24px rgba(0,245,255,0.25);
+  }
 
-      .toast {
-        animation:
-          slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-          fadeOut 0.3s ease-in 2.7s forwards;
-      }
-      @keyframes slideIn {
-        from {
-          transform: translateY(100%) scale(0.9);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0) scale(1);
-          opacity: 1;
-        }
-      }
-      @keyframes fadeOut {
-        to {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-      }
-    </style>
-  </head>
-  <body
-    class="antialiased font-sans selection:bg-brand-gold selection:text-white"
-  >
-    <!-- Toast Container -->
-    <div
-      id="toastContainer"
-      class="fixed bottom-6 right-6 z-[100] space-y-3"
-    ></div>
+  /* WRAPPER */
+  .wrapper {
+    position: relative;
+    z-index: 10;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
 
-    <div class="min-h-screen flex flex-col">
-      <!-- Header -->
-      <header
-        class="px-10 py-6 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md bg-brand-cream/90 border-b border-brand-mocha/20"
-      >
-        <div class="flex items-center gap-5">
-          <div
-            class="w-12 h-12 bg-brand-espresso text-brand-gold rounded-full flex items-center justify-center shadow-lg group hover:scale-110 transition-transform cursor-pointer"
-          >
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M2,21H20V19H2M20,8H18V5H20M20,3H4V13A4,4 0 0,0 8,17H14A4,4 0 0,0 18,13V10H20A2,2 0 0,0 22,8V5C22,3.89 21.1,3 20,3Z"
-              />
-            </svg>
-          </div>
-          <div>
-            <h1
-              class="text-3xl font-serif font-bold text-brand-espresso tracking-tight"
-            >
-              Task<span class="text-brand-gold italic font-normal">Board</span>
-            </h1>
-            <div class="flex items-center gap-2 mt-1">
-              <div
-                id="syncIndicator"
-                class="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse"
-              ></div>
-              <span
-                class="text-[10px] font-bold tracking-widest text-brand-mocha uppercase"
-                >Sync Active</span
-              >
-            </div>
-          </div>
-        </div>
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 48px 24px 40px;
+    background: var(--panel);
+    margin-bottom: 32px;
+  }
 
-        <button
-          onclick="toggleCreateModal()"
-          class="group relative inline-block focus:outline-none"
-        >
-          <span
-            class="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-brand-gold rounded-full transition-transform group-hover:translate-x-0 group-hover:translate-y-0"
-          ></span>
-          <span
-            class="relative inline-block border border-brand-gold bg-brand-white px-8 py-2.5 text-sm font-bold uppercase tracking-widest text-brand-espresso rounded-full hover:bg-brand-gold hover:text-white transition-colors"
-          >
-            Create Task +
-          </span>
-        </button>
-      </header>
+  .title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
 
-      <!-- Board -->
-      <main class="p-10 flex-1 overflow-x-auto">
-        <div class="flex gap-10 h-full min-w-max pb-4">
-          <!-- Todo -->
-          <div class="flex flex-col w-[26rem] column-container column-todo p-6">
-            <div class="flex items-center justify-between mb-6">
-              <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-brand-mocha"></div>
-                <h2 class="font-serif text-xl font-bold text-brand-espresso">
-                  To Do
-                </h2>
-              </div>
-              <span
-                id="todo-count"
-                class="text-xs font-bold bg-brand-mocha/10 text-brand-mocha px-3 py-1 rounded-full"
-                >0</span
-              >
-            </div>
-            <div
-              id="todo"
-              class="column-dropzone flex-1 space-y-4 min-h-[400px]"
-              ondrop="drop(event)"
-              ondragover="allowDrop(event)"
-              ondragenter="dragEnter(event)"
-              ondragleave="dragLeave(event)"
-            ></div>
-          </div>
+  .pixel-avatar {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+  }
 
-          <!-- In Progress -->
-          <div
-            class="flex flex-col w-[26rem] column-container column-progress p-6"
-          >
-            <div class="flex items-center justify-between mb-6">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-2 h-2 rounded-full bg-brand-gold animate-pulse"
-                ></div>
-                <h2 class="font-serif text-xl font-bold text-brand-espresso">
-                  In Progress
-                </h2>
-              </div>
-              <span
-                id="inprogress-count"
-                class="text-xs font-bold bg-brand-gold/10 text-brand-espresso px-3 py-1 rounded-full"
-                >0</span
-              >
-            </div>
-            <div
-              id="inprogress"
-              class="column-dropzone flex-1 space-y-4 min-h-[400px]"
-              ondrop="drop(event)"
-              ondragover="allowDrop(event)"
-              ondragenter="dragEnter(event)"
-              ondragleave="dragLeave(event)"
-            ></div>
-          </div>
+  h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 3.5vw, 22px);
+    color: var(--accent);
+    text-shadow: 3px 3px 0 #003a4a, 0 0 20px rgba(0,245,255,0.4);
+    line-height: 1.4;
+  }
 
-          <!-- Completed -->
-          <div class="flex flex-col w-[26rem] column-container column-done p-6">
-            <div class="flex items-center justify-between mb-6">
-              <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-brand-espresso"></div>
-                <h2 class="font-serif text-xl font-bold text-brand-espresso">
-                  Done
-                </h2>
-              </div>
-              <span
-                id="completed-count"
-                class="text-xs font-bold bg-brand-espresso text-brand-white px-3 py-1 rounded-full"
-                >0</span
-              >
-            </div>
-            <div
-              id="completed"
-              class="column-dropzone flex-1 space-y-4 min-h-[400px]"
-              ondrop="drop(event)"
-              ondragover="allowDrop(event)"
-              ondragenter="dragEnter(event)"
-              ondragleave="dragLeave(event)"
-            ></div>
-          </div>
-        </div>
-      </main>
-    </div>
+  .subtitle {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--accent2);
+    letter-spacing: 2px;
+    margin-top: 10px;
+    text-shadow: 2px 2px 0 #3a0040;
+  }
 
-    <!-- Create Modal -->
-    <div
-      id="createTaskModal"
-      class="hidden fixed inset-0 bg-brand-espresso/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-    >
-      <div
-        class="bg-brand-white w-full max-w-md shadow-2xl rounded-2xl transform scale-100 transition-all border border-brand-mocha/20"
-      >
-        <div class="p-8 pb-0 flex justify-between items-start">
-          <div>
-            <h3 class="text-3xl font-serif text-brand-espresso italic">
-              Create Task
-            </h3>
-          </div>
-          <button
-            onclick="toggleCreateModal()"
-            class="text-brand-mocha hover:text-brand-espresso transition-colors"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </button>
-        </div>
+  .blink {
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
 
-        <form id="taskForm" class="p-8 space-y-6">
-          <div class="space-y-2">
-            <label
-              class="block text-xs font-bold uppercase tracking-widest text-brand-mocha"
-              >Task Title</label
-            >
-            <input
-              type="text"
-              id="taskTitle"
-              required
-              class="w-full px-4 py-3 bg-brand-cream border border-brand-mocha/20 rounded-lg text-brand-espresso text-lg font-serif focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold placeholder-brand-mocha/40 transition-all"
-              placeholder="e.g. Bug Fix: Login Page"
-            />
-          </div>
+  .status-bar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .status-item {
+    font-size: 15px;
+    color: var(--dim);
+  }
+  .status-item span { color: var(--green); }
 
-          <div class="space-y-2">
-            <label
-              class="block text-xs font-bold uppercase tracking-widest text-brand-mocha"
-              >Description</label
-            >
-            <textarea
-              id="taskDescription"
-              rows="3"
-              class="w-full px-4 py-3 bg-brand-cream border border-brand-mocha/20 rounded-lg text-brand-espresso text-sm focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold resize-none placeholder-brand-mocha/40 transition-all"
-              placeholder="Add details, acceptance criteria, etc..."
-            ></textarea>
-          </div>
+  /* SECTION */
+  section {
+    margin-bottom: 28px;
+  }
 
-          <div class="grid grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label
-                class="block text-xs font-bold uppercase tracking-widest text-brand-mocha"
-                >Assignee</label
-              >
-              <input
-                type="text"
-                id="assignedTo"
-                required
-                class="w-full px-4 py-3 bg-brand-cream border border-brand-mocha/20 rounded-lg font-bold text-brand-espresso focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all"
-                placeholder="Name"
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                class="block text-xs font-bold uppercase tracking-widest text-brand-mocha"
-                >Reporter</label
-              >
-              <input
-                type="text"
-                id="assignedBy"
-                required
-                class="w-full px-4 py-3 bg-brand-cream border border-brand-mocha/20 rounded-lg font-bold text-brand-espresso focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all"
-                placeholder="Name"
-              />
-            </div>
-          </div>
+  .section-header {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--accent3);
+    text-shadow: 2px 2px 0 #3a3000;
+    padding: 10px 14px;
+    background: var(--panel);
+    border-left: 4px solid var(--accent3);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
 
-          <button
-            type="submit"
-            class="w-full bg-brand-espresso text-white font-bold py-4 uppercase tracking-widest hover:bg-brand-gold transition-colors rounded-xl shadow-lg mt-4"
-          >
-            Create Task
-          </button>
-        </form>
+  /* ABOUT PANEL */
+  .about-panel {
+    background: var(--panel);
+    padding: 20px 22px;
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .about-panel .highlight { color: var(--accent); }
+  .about-panel .hi2 { color: var(--green); }
+  .about-panel .hi3 { color: var(--accent2); }
+
+  /* LINKS — THE MAIN CARDS */
+  .link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  .link-card {
+    background: var(--panel);
+    padding: 22px 20px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    transition: transform 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .link-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(255,255,255,0.03));
+    pointer-events: none;
+  }
+
+  .link-card:hover {
+    transform: translate(-3px, -3px);
+  }
+  .link-card:hover .card-box-shadow { opacity: 1; }
+
+  .link-card.linkedin { border: 4px solid #0077b5; box-shadow: 6px 6px 0 #003a5a, 0 0 20px rgba(0,119,181,0.2); }
+  .link-card.github   { border: 4px solid #6e5494; box-shadow: 6px 6px 0 #2d1f45, 0 0 20px rgba(110,84,148,0.2); }
+  .link-card.web      { border: 4px solid var(--accent); box-shadow: 6px 6px 0 #003a4a, 0 0 20px rgba(0,245,255,0.15); }
+
+  .link-card:hover.linkedin { box-shadow: 3px 3px 0 #003a5a, 0 0 28px rgba(0,119,181,0.35); }
+  .link-card:hover.github   { box-shadow: 3px 3px 0 #2d1f45, 0 0 28px rgba(110,84,148,0.35); }
+  .link-card:hover.web      { box-shadow: 3px 3px 0 #003a4a, 0 0 28px rgba(0,245,255,0.3); }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .card-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .link-card.linkedin .card-label { color: #5cb8e8; }
+  .link-card.github .card-label   { color: #c084fc; }
+  .link-card.web .card-label      { color: var(--accent); }
+
+  .card-desc {
+    font-size: 16px;
+    color: var(--dim);
+    line-height: 1.4;
+  }
+
+  .card-arrow {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    margin-top: 4px;
+    opacity: 0;
+    transition: opacity 0.15s, transform 0.15s;
+    transform: translateX(-6px);
+  }
+  .link-card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+  .link-card.linkedin .card-arrow { color: #5cb8e8; }
+  .link-card.github .card-arrow   { color: #c084fc; }
+  .link-card.web .card-arrow      { color: var(--accent); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 13px;
+    color: var(--dim);
+    border-top: 2px solid var(--border);
+    margin-top: 48px;
+  }
+  footer .blip { color: var(--green); }
+
+  /* PIXEL SHIP decoration */
+  .ship-row {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0;
+    gap: 40px;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 520px) {
+    h1 { font-size: 13px; }
+    .subtitle { font-size: 7px; }
+    .link-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="pixel-box-accent">
+    <div class="title-row">
+      <!-- Pixel astronaut SVG -->
+      <svg class="pixel-avatar" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="4" width="24" height="4" fill="#c8e8ff"/>
+        <rect x="16" y="8" width="32" height="4" fill="#c8e8ff"/>
+        <rect x="12" y="12" width="40" height="4" fill="#c8e8ff"/>
+        <rect x="12" y="16" width="40" height="16" fill="#c8e8ff"/>
+        <rect x="16" y="18" width="12" height="10" fill="#00d4ff"/>
+        <rect x="36" y="18" width="12" height="10" fill="#00d4ff"/>
+        <rect x="20" y="20" width="4" height="6" fill="#001a2e"/>
+        <rect x="40" y="20" width="4" height="6" fill="#001a2e"/>
+        <rect x="12" y="32" width="40" height="4" fill="#a0c0e8"/>
+        <rect x="16" y="36" width="32" height="4" fill="#a0c0e8"/>
+        <rect x="8" y="20" width="4" height="16" fill="#8ab0d0"/>
+        <rect x="52" y="20" width="4" height="16" fill="#8ab0d0"/>
+        <rect x="4" y="24" width="4" height="8" fill="#8ab0d0"/>
+        <rect x="56" y="24" width="4" height="8" fill="#8ab0d0"/>
+        <rect x="20" y="40" width="10" height="4" fill="#8ab0d0"/>
+        <rect x="34" y="40" width="10" height="4" fill="#8ab0d0"/>
+        <rect x="20" y="44" width="10" height="8" fill="#6090b8"/>
+        <rect x="34" y="44" width="10" height="8" fill="#6090b8"/>
+        <rect x="16" y="52" width="10" height="4" fill="#4070a0"/>
+        <rect x="38" y="52" width="10" height="4" fill="#4070a0"/>
+        <rect x="2" y="26" width="2" height="4" fill="#ffe200"/>
+        <rect x="60" y="26" width="2" height="4" fill="#ffe200"/>
+      </svg>
+      <div>
+        <h1>KURNIA<br>MASSIDIK</h1>
       </div>
     </div>
-
-    <!-- Detail Modal -->
-    <div
-      id="detailModal"
-      class="hidden fixed inset-0 bg-brand-espresso/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-    >
-      <div
-        class="bg-brand-white w-full max-w-lg shadow-2xl rounded-2xl border border-brand-mocha/20 relative overflow-hidden"
-      >
-        <div class="p-10 pb-6 relative z-10">
-          <div class="flex items-center gap-3 mb-4">
-            <div
-              id="detailStatus"
-              class="inline-block px-3 py-1 bg-brand-cream text-brand-espresso border border-brand-mocha/20 text-[10px] font-bold uppercase tracking-[0.2em] rounded-full"
-            >
-              STATUS
-            </div>
-            <div class="h-px bg-brand-mocha/20 flex-1"></div>
-          </div>
-
-          <h3
-            id="detailTitle"
-            class="text-4xl font-serif text-brand-espresso leading-tight mb-6"
-          >
-            Task Title
-          </h3>
-
-          <div class="space-y-8">
-            <div
-              class="bg-brand-cream p-6 rounded-xl border border-brand-mocha/10"
-            >
-              <p
-                id="detailDescription"
-                class="text-brand-espresso/80 font-medium text-base leading-relaxed"
-              >
-                No description provided.
-              </p>
-            </div>
-
-            <div class="flex gap-12">
-              <div>
-                <h4
-                  class="text-[10px] font-bold text-brand-mocha uppercase tracking-widest mb-2"
-                >
-                  Assignee
-                </h4>
-                <div class="flex items-center gap-3">
-                  <div
-                    id="detailAssigneeInitial"
-                    class="w-10 h-10 bg-brand-espresso text-brand-gold rounded-full flex items-center justify-center font-serif text-lg shadow-sm"
-                  >
-                    ?
-                  </div>
-                  <span
-                    id="detailAssignee"
-                    class="text-lg font-bold text-brand-espresso"
-                    >Name</span
-                  >
-                </div>
-              </div>
-              <div>
-                <h4
-                  class="text-[10px] font-bold text-brand-mocha uppercase tracking-widest mb-2"
-                >
-                  Reporter
-                </h4>
-                <div class="flex items-center gap-3">
-                  <div
-                    id="detailReporterInitial"
-                    class="w-10 h-10 bg-brand-gold text-white rounded-full flex items-center justify-center font-serif text-lg shadow-sm"
-                  >
-                    ?
-                  </div>
-                  <span
-                    id="detailReporter"
-                    class="text-lg font-bold text-brand-espresso"
-                    >Name</span
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="p-6 flex justify-end bg-brand-cream border-t border-brand-mocha/10 relative z-10"
-        >
-          <button
-            onclick="toggleDetailModal()"
-            class="text-brand-mocha font-bold uppercase tracking-widest hover:text-brand-espresso transition-colors text-xs"
-          >
-            Close
-          </button>
-        </div>
-      </div>
+    <div class="subtitle">FULL STACK AI ENGINEER <span class="blink">█</span></div>
+    <div class="status-bar">
+      <div class="status-item">LOCATION: <span>INDONESIA</span></div>
+      <div class="status-item">STATUS: <span>ONLINE</span></div>
+      <div class="status-item">OPEN TO: <span>WORK</span></div>
     </div>
+  </header>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-      // =====================================================
-      // SUPABASE CONFIG
-      // =====================================================
-      const SUPABASE_URL = "https://gqkvxlrddhntlfgflyds.supabase.co";
-      const SUPABASE_ANON_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdxa3Z4bHJkZGhudGxmZ2ZseWRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NTE2NTYsImV4cCI6MjA4NTUyNzY1Nn0.6AXZm_-hOL-0TjM3uZlLHQv5ZU1KDpyGWeetaoa0T9k";
+  <!-- ABOUT -->
+  <section>
+    <div class="section-header">// ABOUT_ME.TXT</div>
+    <div class="about-panel pixel-box">
+      Full stack AI engineer building <span class="highlight">AI-powered products</span> and
+      <span class="hi2">distributed systems</span>.
+      Currently hacking on <span class="hi3">agentic pipelines</span>, BI copilots,
+      and fintech platforms across Indonesia.
+      Learning <span class="highlight">Rust</span>. Obsessed with
+      <span class="hi2">systems design</span>.
+    </div>
+  </section>
 
-      const { createClient } = supabase;
-      const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      const TABLE = "tasks";
+  <!-- LINKS -->
+  <section>
+    <div class="section-header">// COMM_CHANNELS.INI</div>
+    <div class="link-grid">
 
-      let tasks = [];
+      <a href="https://linkedin.com/in/kurniamassidik" target="_blank" rel="noopener" class="link-card linkedin">
+        <svg class="card-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="8" height="8" fill="#0077b5"/>
+          <rect x="8" y="0" width="8" height="8" fill="#0077b5"/>
+          <rect x="16" y="0" width="8" height="8" fill="#0077b5"/>
+          <rect x="24" y="0" width="8" height="8" fill="#0077b5"/>
+          <rect x="32" y="0" width="8" height="8" fill="#0077b5"/>
+          <rect x="0" y="8" width="8" height="8" fill="#0077b5"/>
+          <rect x="0" y="16" width="8" height="8" fill="#0077b5"/>
+          <rect x="0" y="24" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="0" y="32" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="8" y="24" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="8" y="32" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="16" y="16" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="16" y="24" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="16" y="32" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="24" y="8" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="32" y="8" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="24" y="16" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="32" y="16" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="24" y="24" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="32" y="24" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="24" y="32" width="8" height="8" fill="#5cb8e8"/>
+          <rect x="32" y="32" width="8" height="8" fill="#5cb8e8"/>
+        </svg>
+        <div class="card-label">LINKEDIN</div>
+        <div class="card-desc">Connect &amp; network professionally</div>
+        <div class="card-arrow">→ VISIT PROFILE</div>
+      </a>
 
-      // =====================================================
-      // SUPABASE CRUD
-      // =====================================================
+      <a href="https://github.com/Kmassidik" target="_blank" rel="noopener" class="link-card github">
+        <svg class="card-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <rect x="12" y="0" width="16" height="4" fill="#c084fc"/>
+          <rect x="8" y="4" width="24" height="4" fill="#c084fc"/>
+          <rect x="4" y="8" width="32" height="4" fill="#c084fc"/>
+          <rect x="4" y="12" width="32" height="4" fill="#c084fc"/>
+          <rect x="4" y="16" width="8" height="4" fill="#c084fc"/>
+          <rect x="28" y="16" width="8" height="4" fill="#c084fc"/>
+          <rect x="4" y="20" width="8" height="4" fill="#9f5fe8"/>
+          <rect x="28" y="20" width="8" height="4" fill="#9f5fe8"/>
+          <rect x="4" y="24" width="32" height="4" fill="#c084fc"/>
+          <rect x="8" y="28" width="8" height="4" fill="#c084fc"/>
+          <rect x="24" y="28" width="8" height="4" fill="#c084fc"/>
+          <rect x="4" y="32" width="8" height="4" fill="#c084fc"/>
+          <rect x="28" y="32" width="8" height="4" fill="#c084fc"/>
+          <rect x="0" y="36" width="8" height="4" fill="#c084fc"/>
+          <rect x="32" y="36" width="8" height="4" fill="#c084fc"/>
+        </svg>
+        <div class="card-label">GITHUB</div>
+        <div class="card-desc">Open source &amp; code repos</div>
+        <div class="card-arrow">→ VIEW REPOS</div>
+      </a>
 
-      async function fetchTasks() {
-        const { data, error } = await db
-          .from(TABLE)
-          .select("*")
-          .order("created_at", { ascending: true });
-        if (error) {
-          showToast("Error loading tasks", true);
-          return;
-        }
+      <a href="https://kurniatech.my.id/" target="_blank" rel="noopener" class="link-card web">
+        <svg class="card-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <rect x="16" y="0" width="8" height="4" fill="#00f5ff"/>
+          <rect x="12" y="4" width="16" height="4" fill="#00f5ff"/>
+          <rect x="8" y="8" width="4" height="4" fill="#00f5ff"/>
+          <rect x="28" y="8" width="4" height="4" fill="#00f5ff"/>
+          <rect x="4" y="12" width="4" height="4" fill="#00f5ff"/>
+          <rect x="32" y="12" width="4" height="4" fill="#00f5ff"/>
+          <rect x="0" y="16" width="4" height="8" fill="#00f5ff"/>
+          <rect x="36" y="16" width="4" height="8" fill="#00f5ff"/>
+          <rect x="4" y="24" width="4" height="4" fill="#00f5ff"/>
+          <rect x="32" y="24" width="4" height="4" fill="#00f5ff"/>
+          <rect x="8" y="28" width="4" height="4" fill="#00f5ff"/>
+          <rect x="28" y="28" width="4" fill="4" height="4" fill="#00f5ff"/>
+          <rect x="12" y="32" width="16" height="4" fill="#00f5ff"/>
+          <rect x="16" y="36" width="8" height="4" fill="#00f5ff"/>
+          <rect x="8" y="16" width="24" height="2" fill="rgba(0,245,255,0.4)"/>
+          <rect x="8" y="20" width="24" height="2" fill="rgba(0,245,255,0.4)"/>
+          <rect x="16" y="8" width="2" height="24" fill="rgba(0,245,255,0.4)"/>
+          <rect x="20" y="8" width="4" height="24" fill="rgba(0,245,255,0.4)"/>
+        </svg>
+        <div class="card-label">WEBSITE</div>
+        <div class="card-desc">kurniatech.my.id — portfolio &amp; blog</div>
+        <div class="card-arrow">→ LAUNCH SITE</div>
+      </a>
 
-        tasks = data.map((row) => ({
-          id: row.id,
-          title: row.title,
-          description: row.description,
-          assignedTo: row.assigned_to,
-          assignedBy: row.assigned_by,
-          status: row.status,
-          createdAt: row.created_at, // Mapping created_at here
-        }));
-        renderBoard();
-      }
+    </div>
+  </section>
 
-      async function createTask(task) {
-        const { data, error } = await db
-          .from(TABLE)
-          .insert({
-            title: task.title,
-            description: task.description,
-            assigned_to: task.assignedTo,
-            assigned_by: task.assignedBy,
-            status: task.status,
-          })
-          .select()
-          .single();
+  <!-- FOOTER -->
+  <footer>
+    <div>INSERT COIN TO CONTINUE <span class="blip blink">■</span></div>
+    <div style="margin-top: 8px;">KURNIA MASSIDIK © 2025 — ALL SYSTEMS OPERATIONAL</div>
+  </footer>
 
-        if (error) {
-          showToast("Failed: " + error.message, true);
-          return null;
-        }
-        showToast("Task Created");
-        return data;
-      }
+</div>
 
-      async function updateTaskStatus(id, newStatus) {
-        const { error } = await db
-          .from(TABLE)
-          .update({ status: newStatus })
-          .eq("id", id);
-        if (error) {
-          showToast("Update failed", true);
-          await fetchTasks();
-          return;
-        }
-        showToast("Status Updated");
-      }
+<script>
+// STARFIELD
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let stars = [];
+let shootingStars = [];
 
-      async function deleteTaskById(id) {
-        const { error } = await db.from(TABLE).delete().eq("id", id);
-        if (error) {
-          showToast("Delete failed", true);
-          return;
-        }
-        showToast("Task Deleted");
-      }
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
 
-      // =====================================================
-      // REALTIME
-      // =====================================================
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 200; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() < 0.8 ? 1 : 2,
+      blink: Math.random(),
+      speed: Math.random() * 0.3 + 0.05
+    });
+  }
+}
 
-      function subscribeToChanges() {
-        db.channel("tasks-realtime")
-          .on(
-            "postgres_changes",
-            { event: "*", schema: "public", table: TABLE },
-            (payload) => {
-              fetchTasks();
-            },
-          )
-          .subscribe((status) => {
-            const indicator = document.getElementById("syncIndicator");
-            if (status === "SUBSCRIBED") {
-              indicator.classList.remove("bg-red-500", "bg-yellow-500");
-              indicator.classList.add("bg-brand-gold");
-            } else {
-              indicator.classList.remove("bg-brand-gold");
-              indicator.classList.add("bg-red-500");
-            }
-          });
-      }
+function spawnShootingStar() {
+  if (Math.random() < 0.008) {
+    shootingStars.push({
+      x: Math.random() * canvas.width * 0.6,
+      y: Math.random() * canvas.height * 0.4,
+      len: Math.random() * 80 + 40,
+      speed: Math.random() * 8 + 6,
+      life: 1.0
+    });
+  }
+}
 
-      // =====================================================
-      // RENDERING
-      // =====================================================
+function drawPixelRect(x, y, size, alpha) {
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = '#c8e8ff';
+  ctx.fillRect(Math.floor(x), Math.floor(y), size, size);
+  ctx.globalAlpha = 1;
+}
 
-      function renderBoard() {
-        const columns = ["todo", "inprogress", "completed"];
-        columns.forEach((status) => {
-          const container = document.getElementById(status);
-          const countLabel = document.getElementById(`${status}-count`);
-          if (!container || !countLabel) return;
+let frame = 0;
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  frame++;
 
-          const filtered = tasks.filter((t) => t.status === status);
-          countLabel.innerText = filtered.length.toString();
-          container.innerHTML = "";
+  for (let s of stars) {
+    const blink = 0.4 + 0.6 * Math.abs(Math.sin(s.blink + frame * 0.01));
+    drawPixelRect(s.x, s.y, s.size, blink);
+    s.y += s.speed * 0.1;
+    if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
+  }
 
-          filtered.forEach((task) => {
-            container.appendChild(createTaskCard(task));
-          });
-        });
-      }
+  spawnShootingStar();
+  for (let i = shootingStars.length - 1; i >= 0; i--) {
+    const ss = shootingStars[i];
+    ctx.globalAlpha = ss.life;
+    ctx.strokeStyle = '#00f5ff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(ss.x, ss.y);
+    ctx.lineTo(ss.x - ss.len, ss.y + ss.len * 0.4);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    ss.x += ss.speed;
+    ss.y += ss.speed * 0.4;
+    ss.life -= 0.025;
+    if (ss.life <= 0) shootingStars.splice(i, 1);
+  }
 
-      function createTaskCard(task) {
-        const div = document.createElement("div");
-        div.id = task.id;
-        div.className =
-          "task-card p-5 relative cursor-grab active:cursor-grabbing group";
-        div.draggable = true;
-        div.ondragstart = drag;
-        div.onclick = () => openTaskDetail(task.id);
+  requestAnimationFrame(animate);
+}
 
-        // Remove underscores from title
-        const displayTitle = task.title
-          ? task.title.replace(/_/g, " ")
-          : "Untitled";
-        const displayDesc = task.description || "";
+window.addEventListener('resize', () => { resize(); initStars(); });
+resize();
+initStars();
+animate();
+</script>
 
-        // Format Date
-        const date = task.createdAt
-          ? new Date(task.createdAt).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })
-          : "Today";
-
-        div.innerHTML = `
-            <div class="flex justify-between items-start mb-2">
-                <h4 class="text-lg font-serif font-bold leading-tight pr-8 break-words text-brand-espresso">${displayTitle}</h4>
-                <button onclick="event.stopPropagation(); handleDelete('${task.id}')" class="absolute top-3 right-3 text-brand-mocha/30 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            
-            <p class="text-sm text-brand-mocha line-clamp-2 font-sans mb-4 min-h-[1.25rem]">${displayDesc}</p>
-
-            <div class="flex items-center justify-between pt-3 border-t border-brand-mocha/10">
-                <div class="flex items-center gap-2">
-                     <div class="w-6 h-6 rounded-full bg-brand-cream border border-brand-mocha/20 text-brand-espresso flex items-center justify-center font-bold text-[10px]">
-                        ${task.assignedTo ? task.assignedTo.substring(0, 1).toUpperCase() : "?"}
-                     </div>
-                     <span class="text-xs font-bold text-brand-mocha uppercase tracking-wider">${task.assignedTo}</span>
-                </div>
-                <div class="text-[10px] font-bold text-brand-mocha/60 uppercase tracking-wider flex items-center gap-1">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    ${date}
-                </div>
-            </div>
-        `;
-        return div;
-      }
-
-      // =====================================================
-      // DRAG & DROP & ACTIONS
-      // =====================================================
-
-      function allowDrop(ev) {
-        ev.preventDefault();
-      }
-      function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-        ev.target.classList.add("dragging");
-      }
-      function dragEnter(ev) {
-        if (ev.currentTarget.classList.contains("column-dropzone"))
-          ev.currentTarget.classList.add("drag-over");
-      }
-      function dragLeave(ev) {
-        if (ev.currentTarget.classList.contains("column-dropzone"))
-          ev.currentTarget.classList.remove("drag-over");
-      }
-      async function drop(ev) {
-        ev.preventDefault();
-        const id = ev.dataTransfer.getData("text");
-        const dragged = document.getElementById(id);
-        if (dragged) dragged.classList.remove("dragging");
-        ev.currentTarget.classList.remove("drag-over");
-
-        const newStatus = ev.currentTarget.id;
-        tasks = tasks.map((t) =>
-          t.id === id ? { ...t, status: newStatus } : t,
-        );
-        renderBoard();
-        await updateTaskStatus(id, newStatus);
-      }
-
-      function toggleCreateModal() {
-        const modal = document.getElementById("createTaskModal");
-        modal.classList.toggle("hidden");
-        if (!modal.classList.contains("hidden"))
-          document.getElementById("taskTitle").focus();
-      }
-      function toggleDetailModal() {
-        document.getElementById("detailModal").classList.toggle("hidden");
-      }
-
-      function openTaskDetail(id) {
-        const task = tasks.find((t) => t.id === id);
-        if (!task) return;
-
-        // Clean title in modal too
-        const displayTitle = task.title
-          ? task.title.replace(/_/g, " ")
-          : "Untitled";
-
-        document.getElementById("detailTitle").innerText = displayTitle;
-        document.getElementById("detailDescription").innerText =
-          task.description || "No specific instructions.";
-        document.getElementById("detailAssignee").innerText = task.assignedTo;
-        document.getElementById("detailReporter").innerText = task.assignedBy;
-        document.getElementById("detailAssigneeInitial").innerText =
-          task.assignedTo.charAt(0).toUpperCase();
-        document.getElementById("detailReporterInitial").innerText =
-          task.assignedBy.charAt(0).toUpperCase();
-
-        const statusEl = document.getElementById("detailStatus");
-        statusEl.innerText =
-          task.status === "inprogress"
-            ? "IN PROGRESS"
-            : task.status.toUpperCase().replace("_", " ");
-
-        // Modal badge colors
-        if (task.status === "todo") {
-          statusEl.className =
-            "inline-block px-4 py-1.5 bg-brand-mocha text-white text-[11px] font-bold uppercase tracking-[0.2em] rounded-full shadow-sm";
-        } else if (task.status === "inprogress") {
-          statusEl.className =
-            "inline-block px-4 py-1.5 bg-brand-gold text-white text-[11px] font-bold uppercase tracking-[0.2em] rounded-full shadow-sm";
-        } else {
-          statusEl.className =
-            "inline-block px-4 py-1.5 bg-brand-espresso text-brand-cream text-[11px] font-bold uppercase tracking-[0.2em] rounded-full shadow-sm";
-        }
-
-        toggleDetailModal();
-      }
-
-      async function handleDelete(id) {
-        tasks = tasks.filter((t) => t.id !== id);
-        renderBoard();
-        await deleteTaskById(id);
-      }
-
-      document.getElementById("taskForm").onsubmit = async function (e) {
-        e.preventDefault();
-        const rawTitle = document.getElementById("taskTitle").value;
-        const newTask = {
-          title: rawTitle,
-          description: document.getElementById("taskDescription").value,
-          assignedTo: document.getElementById("assignedTo").value,
-          assignedBy: document.getElementById("assignedBy").value,
-          status: "todo",
-        };
-        toggleCreateModal();
-        this.reset();
-        const inserted = await createTask(newTask);
-        if (inserted) {
-          tasks.push({
-            id: inserted.id,
-            title: inserted.title,
-            description: inserted.description,
-            assignedTo: inserted.assigned_to,
-            assignedBy: inserted.assigned_by,
-            status: inserted.status,
-            createdAt: inserted.created_at, // Add Date to local state
-          });
-          renderBoard();
-        }
-      };
-
-      function showToast(message, isError = false) {
-        const container = document.getElementById("toastContainer");
-        const toast = document.createElement("div");
-        toast.className = `toast px-6 py-3 rounded-lg font-bold text-sm shadow-xl flex items-center gap-3 border ${isError ? "bg-white border-red-500 text-red-500" : "bg-brand-espresso border-brand-gold text-brand-cream"}`;
-        toast.innerHTML = isError
-          ? `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> ${message}`
-          : `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> ${message}`;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-      }
-
-      window.onload = () => {
-        fetchTasks();
-        subscribeToChanges();
-      };
-    </script>
-  </body>
+</body>
 </html>
